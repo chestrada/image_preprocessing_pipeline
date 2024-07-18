@@ -1,0 +1,1 @@
+from image_preprocessing_pipeline.process_images import merge_all_channels

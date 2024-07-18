@@ -9,7 +9,7 @@ from argparse import RawDescriptionHelpFormatter, ArgumentParser, BooleanOptiona
 from supplements.cli_interface import PrintColors
 
 
-if __name__ == '__main__':
+def merge():
     freeze_support()
     if sys.platform == "win32":
         fnt_cube2video = Path(r".") / "fnt" / "Windows" / "fnt-cube2video.exe"
@@ -100,3 +100,9 @@ if __name__ == '__main__':
         print(f"{PrintColors.FAIL}at least one of --red or --green or --blue is required.{PrintColors.ENDC}")
         raise RuntimeError
 
+
+
+
+
+if __name__ == '__main__':
+    merge()
