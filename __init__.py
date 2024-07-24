@@ -2,6 +2,7 @@ from image_preprocessing_pipeline.process_images import merge_all_channels
 import subprocess
 import os
 
+
 def get_latest_tag():
     try:
         submodule_dir = os.path.dirname(__file__)
