@@ -35,4 +35,4 @@ dependencies:
   - jaxlib=*=*cuda*
   - jax
   - cuda-nvcc
-
+  - prefect
