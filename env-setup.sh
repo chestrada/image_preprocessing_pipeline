@@ -15,22 +15,23 @@ if conda info --envs | grep -q "$ENV_NAME"; then
 else
     echo "Setting up conda environment..." 
     conda env create -f environment.yml -n "$ENV_NAME"
-    if_error_echo "Problem creating Anaconda environment"
+    conda init
     conda activate "$ENV_NAME"
-    if_error_echo "Could not activate environment, this file must be sourced"
     pip install -r requirements.txt
     if_error_echo "Problem installing pip requirements"
     echo "Environment ready"
 fi
 
-echo "Updating image_preprocesing_pipeline module" 
+# echo "Updating image_preprocesing_pipeline module from source" 
 
-git remote add upstream https://github.com/ucla-brain/image-preprocessing-pipeline.git
+# git remote add upstream https://github.com/ucla-brain/image-preprocessing-pipeline.git
 
-git fetch upstream
+# git fetch upstream
 
-git checkout main
+# git checkout main
 
-git merge upstream/main
+# git merge upstream/main
 
-echo "done." 
+# abs2rel
+
+# echo "done." 
