@@ -266,7 +266,7 @@ if __name__ == '__main__':
         os.environ["PATH"] = f"{os.environ['PATH']};{PyScriptsPath.as_posix()}"
         terastitcher = "terastitcher.exe"
         teraconverter = "teraconverter.exe"
-        fnt_slice2cube = Path(r".") / "fnt" / "Windows" / "fnt-slice2cube.exe"
+        fnt_slice2cube = Path(r".") / "image_preprocessing_pipeline" / "fnt" / "Windows" / "fnt-slice2cube.exe"
     elif sys.platform == 'linux' and 'microsoft' not in uname().release.lower():
         print("Linux is detected.")
         os.environ["NUMPY_MADVISE_HUGEPAGE"] = "1"
