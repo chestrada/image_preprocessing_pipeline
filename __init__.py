@@ -1,5 +1,5 @@
 from image_preprocessing_pipeline.process_images import merge_all_channels
-from image_preprocessing_pipeline.convert import main
+from image_preprocessing_pipeline.convert import main as convert
 import subprocess
 import os
 
