@@ -8,21 +8,22 @@ if ! command -v conda &>/dev/null; then
     exit 1
 fi
 
+conda init bash
+source ~/.bashrc
+
 # Check if the environment already exists
 if conda info --envs | grep -q "$ENV_NAME"; then
-    echo "Activating existing Anaconda environment: $ENV_NAME"
-    conda activate "$ENV_NAME"
+    echo "Activating existing conda environment: $ENV_NAME"
+    source activate "$ENV_NAME"  # Use source activate for better compatibility
 else
-    echo "Setting up conda environment..." 
+    echo "Creating and activating new conda environment: $ENV_NAME"
     conda env create -f environment.yml -n "$ENV_NAME"
-    conda init
-    conda activate "$ENV_NAME"
-    pip install -r requirements.txt
-    if_error_echo "Problem installing pip requirements"
-    echo "Environment ready"
+    source activate "$ENV_NAME"
 fi
 
-# echo "Updating image_preprocesing_pipeline module from source" 
+echo "Environment ready"
+
+echo "Updating image_preprocesing_pipeline module from source" 
 
 # git remote add upstream https://github.com/ucla-brain/image-preprocessing-pipeline.git
 
@@ -32,6 +33,6 @@ fi
 
 # git merge upstream/main
 
-# abs2rel
+yes | abs2rel
 
-# echo "done." 
+echo "done." 
