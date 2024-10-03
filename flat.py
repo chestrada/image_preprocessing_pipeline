@@ -5,7 +5,7 @@ import psutil
 import numpy as np
 import pandas as pd
 from pathlib import Path
-from pystripe import imread_tif_raw_png, imsave_tif
+from pystripe.core import imread_tif_raw_png, imsave_tif
 from scipy import stats
 from sklearn.model_selection import train_test_split
 from skimage.restoration import denoise_bilateral
