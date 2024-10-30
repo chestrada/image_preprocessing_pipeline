@@ -97,7 +97,7 @@ def merge():
             right_bit_shifts=None
         )
     else:
-        print(f"{PrintColors.FAIL}at least one of --red or --green or --blue is required.{PrintColors.ENDC}")
+        print(f"{PrintColors.FAIL}at least two of cyan, magenta, yellow, or black is required.{PrintColors.ENDC}")
         raise RuntimeError
 
 
