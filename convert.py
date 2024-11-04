@@ -22,6 +22,34 @@ from supplements.cli_interface import PrintColors
 
 def main(args: Namespace):
     input_path = Path(args.input)
+
+    if sys.platform == "win32":
+        # print("Windows is detected.")
+        os.environ['MKL_NUM_THREADS'] = '1'
+        os.environ['NUMEXPR_NUM_THREADS'] = '1'
+        os.environ['OMP_NUM_THREADS'] = '1'
+        psutil.Process().nice(getattr(psutil, "IDLE_PRIORITY_CLASS"))
+        TeraStitcherPath = Path(r"TeraStitcher") / "Windows" / cpu_instruction
+        os.environ["PATH"] = f"{os.environ['PATH']};{TeraStitcherPath.as_posix()}"
+        os.environ["PATH"] = f"{os.environ['PATH']};{PyScriptsPath.as_posix()}"
+        terastitcher = "terastitcher.exe"
+        teraconverter = "teraconverter.exe"
+        fnt_slice2cube = Path(r".") / "image_preprocessing_pipeline" / "fnt" / "Windows" / "fnt-slice2cube.exe"
+    elif sys.platform == 'linux' and 'microsoft' not in uname().release.lower():
+        print("Linux is detected.")
+        os.environ["NUMPY_MADVISE_HUGEPAGE"] = "1"
+        psutil.Process().nice(value=19)
+        TeraStitcherPath = Path(r".") / "TeraStitcher" / "Linux" / cpu_instruction
+        os.environ["PATH"] = f"{os.environ['PATH']}:{TeraStitcherPath.as_posix()}"
+        os.environ["PATH"] = f"{os.environ['PATH']}:{PyScriptsPath.as_posix()}"
+        terastitcher = "terastitcher"
+        teraconverter = "teraconverter"
+        os.environ["TERM"] = "xterm"
+        fnt_slice2cube = Path(r".") / "fnt" / "Linux" / "fnt-slice2cube"
+    else:
+        print("yet unsupported OS")
+        raise RuntimeError
+
     if not args.input or not input_path.exists():
         print(f"{PrintColors.FAIL}Input path is not valid.{PrintColors.ENDC}")
         raise RuntimeError
