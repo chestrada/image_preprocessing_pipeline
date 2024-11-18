@@ -22,6 +22,10 @@ from supplements.cli_interface import PrintColors
 
 def main(args: Namespace):
     input_path = Path(args.input)
+    cpu_instruction = "SSE2"
+    for item in ["SSE2", "AVX", "AVX2", "AVX512f"]:
+        cpu_instruction = item if CPUFeature[item] else cpu_instruction
+    PyScriptsPath = Path(r".") / "TeraStitcher" / "pyscripts"
 
     if sys.platform == "win32":
         # print("Windows is detected.")
@@ -39,7 +43,7 @@ def main(args: Namespace):
         print("Linux is detected.")
         os.environ["NUMPY_MADVISE_HUGEPAGE"] = "1"
         psutil.Process().nice(value=19)
-        TeraStitcherPath = Path(r".") / "TeraStitcher" / "Linux" / cpu_instruction
+        TeraStitcherPath = Path(r".") / "image_preprocessing_pipeline" / "TeraStitcher" / "Linux" / cpu_instruction
         os.environ["PATH"] = f"{os.environ['PATH']}:{TeraStitcherPath.as_posix()}"
         os.environ["PATH"] = f"{os.environ['PATH']}:{PyScriptsPath.as_posix()}"
         terastitcher = "terastitcher"
