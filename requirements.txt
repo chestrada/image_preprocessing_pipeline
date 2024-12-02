@@ -3,3 +3,5 @@ cpufeature
 pyvista
 ptwt
 abs2rel
+prefect-opentelemetry
+
