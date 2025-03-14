@@ -786,7 +786,7 @@ def process_channel(
 
 
 def get_transformation_matrix(reference: ndarray, subject: ndarray,
-                              iterations: int = 10000, termination: float = 1e-10, verbose=True) -> ndarray:
+                            iterations: int = 10000, termination: float = 1e-10, verbose=True) -> ndarray:
     warp_matrix = eye(2, 3, dtype=float32)  # i.e. no transformation
     if reference is not None and subject is not None:
         downsampling_factors = [1, 1]  # y, x
@@ -979,15 +979,21 @@ def merge_all_channels(
 
     workers = min(workers, tif_stacks[0].nz)
     progress_queue = Queue()
+    worker_processes = []
     for worker_ in range(workers):
-        MultiProcessQueueRunner(progress_queue, args_queue,
-                                fun=generate_composite_image, replace_timeout_with_dummy=False).start()
+        worker = MultiProcessQueueRunner(progress_queue, args_queue,
+                                fun=generate_composite_image, replace_timeout_with_dummy=False)
+        worker.start()
+        worker_processes.append(worker)
 
     return_code = progress_manager(progress_queue, workers, tif_stacks[0].nz, desc="RGB")
     args_queue.cancel_join_thread()
     args_queue.close()
     progress_queue.cancel_join_thread()
     progress_queue.close()
+    for worker in worker_processes:
+        worker.terminate()
+        worker.join() 
     if return_code != 0:
         p_log(f"{PrintColors.FAIL}merge_all_channels function failed{PrintColors.ENDC}")
         raise RuntimeError
@@ -995,15 +1001,15 @@ def merge_all_channels(
 
 
 def get_imaris_command(imaris_path: Path, input_path: Path, output_path: Path = None,
-                       voxel_size_x: float = 1, voxel_size_y: float = 1, voxel_size_z: float = 1,
-                       workers: int = cpu_count(logical=False),
-                       dtype: str = 'uint8'):
+                    voxel_size_x: float = 1, voxel_size_y: float = 1, voxel_size_z: float = 1,
+                    workers: int = cpu_count(logical=False),
+                    dtype: str = 'uint8'):
     files = sorted(list(input_path.glob("*.tif")) + list(input_path.glob("*.tiff")))
     file = files[0]
     command = []
     if imaris_path.exists() and len(files) > 0:
         p_log(f"{PrintColors.GREEN}{date_time_now()}: {PrintColors.ENDC}"
-              f"converting {input_path.name} to ims ... ")
+            f"converting {input_path.name} to ims ... ")
 
         ims_file_path = input_path.parent / f'{input_path.name}.ims'
         if output_path:
