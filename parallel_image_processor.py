@@ -661,15 +661,24 @@ def parallel_image_processor(
     semaphore = Queue()
     semaphore.put(1)
     workers = min(max_processors, args_queue.qsize())
+    worker_processes = []
     print(f"{PrintColors.GREEN}{date_time_now()}: {PrintColors.ENDC}starting workers ...")
     for worker in tqdm(range(workers), desc=' workers'):
         if progress_queue.qsize() + worker < num_images:
-            MultiProcess(
+            #print(f"Debug print - images in multi process: {len(images)}")
+            #print(f"Debug print - destination in multi process: {destination}")
+            #print(f"Debug print - kwargs in multi process: {kwargs}")
+            #print(f"Debug print - args in multi process: {args}")
+            #print(f"Debug print - dsp in multi process: {downsampled_path}")
+            #sys.exit()
+            worker = MultiProcess(
                 progress_queue, args_queue, semaphore, fun, images, destination, args, kwargs, shape, dtype,
                 rename=rename, tif_prefix=tif_prefix,
                 source_voxel=source_voxel, target_voxel=target_voxel, down_sampled_path=downsampled_path,
                 rotation=rotation, channel=channel, timeout=timeout, compression=compression, resume=resume,
-                needed_memory=needed_memory, save_images=save_images).start()
+                needed_memory=needed_memory, save_images=save_images)
+            worker.start()
+            worker_processes.append(worker)
         else:
             print('\n the existing workers can finish the job! no more workers are needed.')
             workers = worker
@@ -680,6 +689,9 @@ def parallel_image_processor(
     args_queue.close()
     progress_queue.cancel_join_thread()
     progress_queue.close()
+    for worker in worker_processes:
+        worker.terminate()
+        worker.join()
 
     # down-sample on z accurately
     if return_code == 0 and need_down_sampling:
