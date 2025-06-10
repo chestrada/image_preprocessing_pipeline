@@ -6,7 +6,7 @@ channels:
 dependencies:
   - python=3.11.12
   - prefect=3.4.4
-  - pydantic=2.11.5
+  - pydantic=2.11.4
   - pip
   - pip:
     - -r requirements.txt
