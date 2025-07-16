@@ -18,6 +18,8 @@ if conda info --envs | grep -q "$ENV_NAME"; then
 else
     echo "Creating and activating new conda environment: $ENV_NAME"
     conda env create -f environment.yml -n "$ENV_NAME"
+    echo "Accepting conda terms and conditions"
+    conda tos accept --override-channels --channel defaults
     source activate "$ENV_NAME"
 fi
 
